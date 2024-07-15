@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة كوبونات الخدشية</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>مسابقة كوبونات الخدشية</h1>
+        <div id="user-info" class="user-info" style="display: none;">
+            <div class="user-icon">👤</div>
+            <div id="user-details"></div>
+            <button onclick="logout()">تسجيل الخروج</button>
+        </div>
+        <div id="login-container">
+            <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+            <input type="text" id="phone" placeholder="أدخل رقم الهاتف">
+            <input type="email" id="email" placeholder="أدخل البريد الإلكتروني">
+            <button onclick="login()">تسجيل الدخول</button>
+        </div>
+        <div id="scratch-container" style="display:none;">
+            <div class="scratch-card" id="scratch-card">
+                <canvas id="canvas" width="300" height="200"></canvas>
+                <div class="prize" id="prize">الكشف عن الجائزة!</div>
+            </div>
+            <button onclick="resetCard()">جرب مرة أخرى</button>
+        </div>
+        <div class="loading" id="loading"></div>
+        <div class="toast" id="toast" style="display:none;"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
