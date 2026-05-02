@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ورديان بلس | Wardian Plus</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#29DB80',
+            'primary-dark': '#1fa864',
+            'primary-light': '#4de899',
+            dark: '#0d1117',
+            'dark-card': '#161b22',
+            'dark-surface': '#21262d',
+            'dark-border': '#30363d',
+          },
+          fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root { --primary: #29DB80; --primary-dark: #1fa864; --dark: #0d1117; --dark-card: #161b22; --dark-surface: #21262d; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', sans-serif; background: #f8faf9; overflow-x: hidden; }
+    .page { display: none; }
+    .page.active { display: block; animation: fadeUp 0.4s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(3deg); } }
+    @keyframes float2 { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-15px) rotate(-2deg); } }
+    @keyframes pulseGreen { 0%,100% { box-shadow: 0 0 0 0 rgba(41,219,128,0.4); } 50% { box-shadow: 0 0 0 15px rgba(41,219,128,0); } }
+    @keyframes slideInR { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes slideInL { from { opacity:0; transform:translateX(-40px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes scaleIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
+    @keyframes typing { 0%{opacity:0.3;}50%{opacity:1;}100%{opacity:0.3;} }
+    @keyframes cartBounce { 0%,100%{transform:scale(1);}50%{transform:scale(1.3);} }
+    .float-anim { animation: float 6s ease-in-out infinite; }
+    .float-anim2 { animation: float2 5s ease-in-out infinite 1s; }
+    .pulseGreen { animation: pulseGreen 2s infinite; }
+    .cart-bounce { animation: cartBounce 0.4s ease; }
+
+    .hero-bg { background: linear-gradient(135deg, #0d1117 0%, #111820 40%, #0d2818 70%, #0d1117 100%); position:relative; overflow:hidden; }
+    .hero-bg::before { content:''; position:absolute; top:-50%; right:-30%; width:80%; height:200%; background:radial-gradient(circle, rgba(41,219,128,0.08) 0%, transparent 60%); pointer-events:none; }
+    .hero-bg::after { content:''; position:absolute; bottom:-50%; left:-20%; width:60%; height:200%; background:radial-gradient(circle, rgba(41,219,128,0.05) 0%, transparent 50%); pointer-events:none; }
+
+    .offer-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+    .offer-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+    .discount-badge { background: linear-gradient(135deg, #29DB80, #1fa864); clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%); }
+    .category-chip { transition: all 0.25s ease; }
+    .category-chip:hover, .category-chip.active { background: var(--primary); color: #0d1117; transform: scale(1.05); }
+    .nav-link { position:relative; transition:color 0.3s; }
+    .nav-link::after { content:''; position:absolute; bottom:-4px; right:0; width:0; height:2px; background:var(--primary); transition:width 0.3s; }
+    .nav-link:hover::after, .nav-link.active::after { width:100%; }
+
+    .btn-primary { background:linear-gradient(135deg, #29DB80, #22c474); color:#0d1117; font-weight:700; transition:all 0.3s; position:relative; overflow:hidden; }
+    .btn-primary::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition:left 0.5s; }
+    .btn-primary:hover::before { left:100%; }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(41,219,128,0.35); }
+    .btn-outline { border:2px solid var(--primary); color:var(--primary); font-weight:600; transition:all 0.3s; }
+    .btn-outline:hover { background:var(--primary); color:#0d1117; }
+    .glass { background:rgba(255,255,255,0.05); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.08); }
+    .stat-card { transition:all 0.3s; }
+    .stat-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(0,0,0,0.08); }
+
+    .chatbot-btn { position:fixed; bottom:24px; left:24px; width:60px; height:60px; background:linear-gradient(135deg,#29DB80,#22c474); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:1000; box-shadow:0 8px 30px rgba(41,219,128,0.4); transition:all 0.3s; }
+    .chatbot-btn:hover { transform:scale(1.1); }
+    .chatbot-window { position:fixed; bottom:100px; left:24px; width:380px; max-height:520px; background:#fff; border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,0.2); z-index:1001; display:none; flex-direction:column; overflow:hidden; animation:scaleIn 0.3s ease; }
+    .chatbot-window.open { display:flex; }
+    .chat-messages { flex:1; overflow-y:auto; padding:16px; max-height:360px; }
+    .chat-messages::-webkit-scrollbar { width:4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background:#ddd; border-radius:4px; }
+    .msg-bot { background:#f0faf4; border-radius:16px 16px 16px 4px; padding:10px 14px; margin-bottom:10px; max-width:85%; font-size:14px; line-height:1.6; animation:slideInR 0.3s ease; }
+    .msg-user { background:linear-gradient(135deg,#29DB80,#22c474); color:#0d1117; border-radius:16px 16px 4px 16px; padding:10px 14px; margin-bottom:10px; max-width:85%; margin-right:auto; margin-left:0; font-size:14px; line-height:1.6; animation:slideInL 0.3s ease; }
+    .typing-indicator span { display:inline-block; width:8px; height:8px; background:#29DB80; border-radius:50%; margin:0 2px; animation:typing 1.2s infinite; }
+    .typing-indicator span:nth-child(2) { animation-delay:0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay:0.4s; }
+
+    .toast-container { position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px; align-items:center; }
+    .toast { background:#0d1117; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; font-weight:600; box-shadow:0 8px 30px rgba(0,0,0,0.2); animation:fadeUp 0.3s ease; display:flex; align-items:center; gap:8px; border-right:4px solid #29DB80; }
+    .toast.error { border-right-color:#ef4444; }
+
+    .form-input { width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:12px; font-family:'Cairo',sans-serif; font-size:14px; transition:all 0.3s; background:#fff; }
+    .form-input:focus { outline:none; border-color:#29DB80; box-shadow:0 0 0 4px rgba(41,219,128,0.1); }
+    .tab-btn { padding:10px 24px; border-radius:10px; font-weight:700; transition:all 0.3s; cursor:pointer; font-family:'Cairo'; }
+    .tab-btn.active { background:var(--primary); color:#0d1117; }
+    .tab-btn:not(.active) { background:transparent; color:#8b949e; }
+
+    ::-webkit-scrollbar { width:8px; }
+    ::-webkit-scrollbar-track { background:#f1f1f1; }
+    ::-webkit-scrollbar-thumb { background:#ccc; border-radius:4px; }
+
+    .mobile-menu { display:none; position:fixed; top:0; right:0; width:280px; height:100vh; background:#0d1117; z-index:2000; padding:24px; animation:slideInL 0.3s ease; overflow-y:auto; }
+    .mobile-menu.open { display:flex; flex-direction:column; }
+    .mobile-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1999; }
+    .mobile-overlay.open { display:block; }
+
+    .star-rating { display:inline-flex; gap:2px; }
+    .star-rating i { cursor:pointer; transition:all 0.15s; font-size:16px; }
+    .star-rating i:hover { transform:scale(1.2); }
+
+    .cart-badge { position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; background:#ef4444; color:#fff; border-radius:50%; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+
+    .faq-item { transition: all 0.3s; }
+    .faq-item:hover { border-color: #29DB80; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; }
+    .faq-item.open .faq-answer { max-height: 300px; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-chevron { transition: transform 0.3s; }
+
+    .complaint-card { transition: all 0.3s; }
+    .complaint-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+    @media (max-width:768px) {
+      .chatbot-window { width:calc(100vw - 32px); left:16px; bottom:90px; }
+    }
+  </style>
+</head>
+<body class="font-cairo text-gray-800">
+
+  <!-- شريط التنقل -->
+  <nav id="mainNav" class="fixed top-0 right-0 left-0 z-50 transition-all duration-300" style="background:rgba(13,17,23,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+          <img src="https://z-cdn-media.chatglm.cn/files/eb738fbe-e2cd-4bbf-9d62-d773e1f59a98.jpg?auth_key=1876522031-00a6cbfe03ba4bab96cad05058b624d5-0-09a1f49dc8b65a70cde6c7da269ea9b6" alt="ورديان بلس" class="h-10 object-contain rounded">
+        </div>
+        <div class="hidden md:flex items-center gap-6">
+          <a class="nav-link text-gray-300 hover:text-primary cursor-pointer text-sm font-semibold" onclick="navigateTo('home')">الرئيسية</a>
+          <a class="nav-link text-gray-300 hover:text-primary cursor-pointer text-sm font-semibold" onclick="navigateTo('offers')">العروض</a>
+          <a class="nav-link text-gray-300 hover:text-primary cursor-pointer text-sm font-semibold" onclick="navigateTo('contact')">الشكاوي والاستفسارات</a>
+          <span id="navDashboard" class="hidden">
+            <a class="nav-link text-gray-300 hover:text-primary cursor-pointer text-sm font-semibold" onclick="goToDashboard()">لوحة التحكم</a>
+          </span>
+        </div>
+        <div class="hidden md:flex items-center gap-3">
+          <button onclick="navigateTo('cart')" class="relative text-gray-300 hover:text-primary transition-colors p-2" id="navCartBtn">
+            <i class="fas fa-shopping-cart text-lg"></i>
+            <span class="cart-badge" id="navCartBadge" style="display:none;">0</span>
+          </button>
+          <div id="navAuth" class="flex items-center gap-3">
+            <button onclick="navigateTo('login')" class="btn-outline px-5 py-2 rounded-xl text-sm">تسجيل الدخول</button>
+            <button onclick="navigateTo('register')" class="btn-primary px-5 py-2 rounded-xl text-sm">إنشاء حساب</button>
+          </div>
+          <div id="navUser" class="hidden flex items-center gap-3">
+            <div class="flex items-center gap-2 glass rounded-full px-4 py-1.5">
+              <i class="fas fa-coins text-primary text-sm"></i>
+              <span id="navPoints" class="text-primary font-bold text-sm">0</span>
+            </div>
+            <div class="relative group">
+              <div class="flex items-center gap-2 cursor-pointer glass rounded-full px-3 py-1.5">
+                <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center"><span id="navAvatar" class="text-dark text-xs font-bold">م</span></div>
+                <span id="navName" class="text-white text-sm font-semibold"></span>
+                <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+              </div>
+              <div class="absolute left-0 top-full mt-2 w-48 bg-dark-card rounded-xl border border-dark-border shadow-2xl hidden group-hover:block z-50">
+                <div class="p-2">
+                  <a onclick="goToDashboard()" class="block px-4 py-2 text-gray-300 hover:text-primary hover:bg-dark-surface rounded-lg text-sm cursor-pointer transition-colors"><i class="fas fa-tachometer-alt ml-2"></i>لوحة التحكم</a>
+                  <a onclick="logout()" class="block px-4 py-2 text-red-400 hover:bg-dark-surface rounded-lg text-sm cursor-pointer transition-colors"><i class="fas fa-sign-out-alt ml-2"></i>تسجيل الخروج</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="md:hidden flex items-center gap-3">
+          <button onclick="navigateTo('cart')" class="relative text-gray-300 hover:text-primary transition-colors p-2">
+            <i class="fas fa-shopping-cart text-lg"></i>
+            <span class="cart-badge" id="mobileCartBadge" style="display:none;">0</span>
+          </button>
+          <button onclick="toggleMobileMenu()" class="text-white text-xl"><i class="fas fa-bars"></i></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobileOverlay" class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+  <div id="mobileMenu" class="mobile-menu">
+    <div class="flex items-center justify-between mb-8">
+      <img src="https://z-cdn-media.chatglm.cn/files/eb738fbe-e2cd-4bbf-9d62-d773e1f59a98.jpg?auth_key=1876522031-00a6cbfe03ba4bab96cad05058b624d5-0-09a1f49dc8b65a70cde6c7da269ea9b6" alt="ورديان بلس" class="h-8 object-contain rounded">
+      <button onclick="toggleMobileMenu()" class="text-white text-xl"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="flex flex-col gap-2">
+      <a onclick="navigateTo('home');toggleMobileMenu();" class="text-gray-300 hover:text-primary py-3 px-4 rounded-xl hover:bg-dark-surface cursor-pointer transition-colors font-semibold">الرئيسية</a>
+      <a onclick="navigateTo('offers');toggleMobileMenu();" class="text-gray-300 hover:text-primary py-3 px-4 rounded-xl hover:bg-dark-surface cursor-pointer transition-colors font-semibold">العروض</a>
+      <a onclick="navigateTo('cart');toggleMobileMenu();" class="text-gray-300 hover:text-primary py-3 px-4 rounded-xl hover:bg-dark-surface cursor-pointer transition-colors font-semibold">السلة</a>
+      <a onclick="navigateTo('contact');toggleMobileMenu();" class="text-gray-300 hover:text-primary py-3 px-4 rounded-xl hover:bg-dark-surface cursor-pointer transition-colors font-semibold">الشكاوي والاستفسارات</a>
+      <div id="mobileDashboardLink" class="hidden">
+        <a onclick="goToDashboard();toggleMobileMenu();" class="text-gray-300 hover:text-primary py-3 px-4 rounded-xl hover:bg-dark-surface cursor-pointer transition-colors font-semibold">لوحة التحكم</a>
+      </div>
+      <hr class="border-dark-border my-2">
+      <div id="mobileAuth">
+        <a onclick="navigateTo('login');toggleMobileMenu();" class="block text-gray-300 hover:text-primary py-3 px-4 rounded-xl hover:bg-dark-surface cursor-pointer transition-colors font-semibold">تسجيل الدخول</a>
+        <a onclick="navigateTo('register');toggleMobileMenu();" class="block text-primary py-3 px-4 rounded-xl hover:bg-dark-surface cursor-pointer transition-colors font-semibold">إنشاء حساب</a>
+      </div>
+      <div id="mobileUser" class="hidden">
+        <a onclick="logout();toggleMobileMenu();" class="block text-red-400 py-3 px-4 rounded-xl hover:bg-dark-surface cursor-pointer transition-colors font-semibold">تسجيل الخروج</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- ===== الصفحة الرئيسية ===== -->
+  <div id="home-page" class="page active">
+    <section class="hero-bg min-h-screen flex items-center pt-16 relative">
+      <div class="absolute top-32 left-10 w-20 h-20 rounded-2xl border-2 border-primary opacity-20 float-anim rotate-12"></div>
+      <div class="absolute bottom-40 right-20 w-16 h-16 rounded-full border-2 border-primary opacity-15 float-anim2"></div>
+      <div class="absolute top-1/2 left-1/4 w-3 h-3 rounded-full bg-primary opacity-30 float-anim"></div>
+      <div class="absolute top-40 right-1/3 w-2 h-2 rounded-full bg-primary-light opacity-40 float-anim2"></div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6">
+              <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              <span class="text-primary text-sm font-semibold">اكتر من 10,000 عرض نشط</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+              وفّر أكتر,<br><span class="text-primary">اعيش أحسن</span>
+            </h1>
+            <p class="text-gray-400 text-lg mb-8 leading-relaxed max-w-lg">اكتشف أقوى العروض والخصومات من أقرب المحلات ليك. كسب نقاط واسترد كاشباك مع كل عملية شراء مع ورديان بلس.</p>
+            <div class="flex flex-wrap gap-4 mb-8">
+              <button onclick="navigateTo('offers')" class="btn-primary px-8 py-3.5 rounded-2xl text-base">ابدأ التوفير دلوقتي <i class="fas fa-arrow-left mr-2"></i></button>
+              <button onclick="navigateTo('register')" class="btn-outline px-8 py-3.5 rounded-2xl text-base">سجّل مجاناً</button>
+            </div>
+            <div class="flex items-center gap-6 text-gray-400 text-sm">
+              <div class="flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>مجاني بالكامل</span></div>
+              <div class="flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>كاشباك فوري</span></div>
+              <div class="flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>عروض يومية</span></div>
+            </div>
+          </div>
+          <div class="hidden md:block relative">
+            <div class="relative">
+              <div class="absolute -top-4 -right-4 w-full h-full rounded-3xl bg-primary opacity-5"></div>
+              <div class="relative glass rounded-3xl p-6 space-y-4">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center"><i class="fas fa-fire text-primary"></i></div>
+                  <span class="text-white font-bold">عروض اليوم</span>
+                </div>
+                <div class="glass rounded-2xl p-4 flex items-center gap-4 hover:border-primary/30 transition-colors cursor-pointer">
+                  <img src="https://picsum.photos/seed/oil1/80/80" class="w-16 h-16 rounded-xl object-cover" alt="">
+                  <div class="flex-1"><p class="text-white font-bold text-sm">زيت عباد الشمس</p><p class="text-gray-400 text-xs">سوبر ماركت الأهلية</p></div>
+                  <div class="discount-badge px-3 py-1 text-dark font-extrabold text-sm">-35%</div>
+                </div>
+                <div class="glass rounded-2xl p-4 flex items-center gap-4 hover:border-primary/30 transition-colors cursor-pointer">
+                  <img src="https://picsum.photos/seed/rice2/80/80" class="w-16 h-16 rounded-xl object-cover" alt="">
+                  <div class="flex-1"><p class="text-white font-bold text-sm">أرز بسمتي 5 كيلو</p><p class="text-gray-400 text-xs">م Markt العصر</p></div>
+                  <div class="discount-badge px-3 py-1 text-dark font-extrabold text-sm">-25%</div>
+                </div>
+                <div class="glass rounded-2xl p-4 flex items-center gap-4 hover:border-primary/30 transition-colors cursor-pointer">
+                  <img src="https://picsum.photos/seed/chick3/80/80" class="w-16 h-16 rounded-xl object-cover" alt="">
+                  <div class="flex-1"><p class="text-white font-bold text-sm">فرخة بلدي طازة</p><p class="text-gray-400 text-xs">جزارة الحلال</p></div>
+                  <div class="discount-badge px-3 py-1 text-dark font-extrabold text-sm">-40%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 bg-white border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="text-center"><p class="text-3xl font-black text-dark">15K+</p><p class="text-gray-500 text-sm font-semibold">عرض نشط</p></div>
+          <div class="text-center"><p class="text-3xl font-black text-primary">500+</p><p class="text-gray-500 text-sm font-semibold">تاجر مشارك</p></div>
+          <div class="text-center"><p class="text-3xl font-black text-dark">50K+</p><p class="text-gray-500 text-sm font-semibold">مستخدم نشط</p></div>
+          <div class="text-center"><p class="text-3xl font-black text-primary">2M+</p><p class="text-gray-500 text-sm font-semibold">جنيه وفرّناه</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10"><h2 class="text-3xl font-black text-dark mb-2">تصفّح بالتصنيف</h2><p class="text-gray-500">اختار القسم اللي يعجبك واكتشف العروض</p></div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4" id="categoriesGrid"></div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-10">
+          <div><h2 class="text-3xl font-black text-dark mb-1">عروض مميزة</h2><p class="text-gray-500">أقوى الخصومات المتاحة دلوقتي</p></div>
+          <button onclick="navigateTo('offers')" class="btn-outline px-5 py-2.5 rounded-xl text-sm">عرض الكل <i class="fas fa-arrow-left mr-1"></i></button>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="featuredOffers"></div>
+      </div>
+    </section>
+
+    <section class="py-20 hero-bg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14"><h2 class="text-3xl font-black text-white mb-2">كيف يعمل ورديان بلس؟</h2><p class="text-gray-400">3 خطوات بس وتبدأ توفر</p></div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="glass rounded-3xl p-8 text-center hover:border-primary/30 transition-colors">
+            <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5"><i class="fas fa-search text-primary text-2xl"></i></div>
+            <h3 class="text-white font-bold text-lg mb-3">ابحث عن العرض</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">دوّر على العرض اللي عايزه من آلاف العروض المتاحة</p>
+          </div>
+          <div class="glass rounded-3xl p-8 text-center hover:border-primary/30 transition-colors">
+            <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5"><i class="fas fa-shopping-cart text-primary text-2xl"></i></div>
+            <h3 class="text-white font-bold text-lg mb-3">اشتري وكسب نقاط</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">اشتري العرض وكسب نقاط وكاشباك على كل عملية شراء</p>
+          </div>
+          <div class="glass rounded-3xl p-8 text-center hover:border-primary/30 transition-colors">
+            <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5"><i class="fas fa-wallet text-primary text-2xl"></i></div>
+            <h3 class="text-white font-bold text-lg mb-3">استرد نقودك</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">حوّل نقاطك وكاشباكك لفلوس حقيقية</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- قسم الشكاوي المختصر في الرئيسية -->
+    <section class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 class="text-3xl font-black text-dark mb-3">عندك شكوى أو استفسار؟</h2>
+            <p class="text-gray-500 mb-6 leading-relaxed">فريق الدعم عند ورديان بلس موجود دايمًا يساعدك. سواء كان عندك مشكلة في طلب، استفسار عن عرض، أو اقتراح للتحسين — احنا سامعينك.</p>
+            <div class="space-y-4 mb-6">
+              <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i class="fas fa-phone text-primary"></i></div><div><p class="font-bold text-sm">اتصل بينا</p><p class="text-gray-500 text-sm">01012345678 - 09:00 لمية 22:00</p></div></div>
+              <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i class="fas fa-envelope text-primary"></i></div><div><p class="font-bold text-sm">راسلنا على الإيميل</p><p class="text-gray-500 text-sm">support@wardianplus.com</p></div></div>
+              <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i class="fab fa-whatsapp text-primary"></i></div><div><p class="font-bold text-sm">واتساب</p><p class="text-gray-500 text-sm">01098765432</p></div></div>
+            </div>
+            <button onclick="navigateTo('contact')" class="btn-primary px-8 py-3 rounded-xl">قدّم شكوى أو استفسار <i class="fas fa-arrow-left mr-2"></i></button>
+          </div>
+          <div class="hidden md:block">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border relative">
+              <div class="absolute -top-4 -left-4 w-20 h-20 rounded-2xl bg-primary/10"></div>
+              <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center"><i class="fas fa-headset text-primary text-xl"></i></div>
+                  <div><p class="font-bold text-lg">خدمة العملاء</p><p class="text-gray-400 text-xs">رد سريع خلال ساعات</p></div>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"><i class="fas fa-clock text-primary"></i><span class="text-sm font-semibold">متوسط وقت الرد: ساعتين</span></div>
+                  <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"><i class="fas fa-check-double text-primary"></i><span class="text-sm font-semibold">نسبة الحل: 98%</span></div>
+                  <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"><i class="fas fa-smile text-primary"></i><span class="text-sm font-semibold">رضا العملاء: 4.8/5</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20 bg-gradient-to-br from-primary to-primary-dark relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 right-10 w-40 h-40 rounded-full border-4 border-white float-anim"></div>
+        <div class="absolute bottom-10 left-20 w-24 h-24 rounded-full border-4 border-white float-anim2"></div>
+      </div>
+      <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+        <h2 class="text-3xl sm:text-4xl font-black text-dark mb-4">جاهز تبدأ توفر؟</h2>
+        <p class="text-dark/70 text-lg mb-8">انضم لأكتر من 50,000 مستخدم بيوفروا كل يوم مع ورديان بلس</p>
+        <button onclick="navigateTo('register')" class="bg-dark text-primary px-10 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-all hover:shadow-2xl">سجّل دلوقتي مجاناً <i class="fas fa-rocket mr-2"></i></button>
+      </div>
+    </section>
+
+    <footer class="bg-dark py-12 border-t border-dark-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+          <div>
+            <img src="https://z-cdn-media.chatglm.cn/files/eb738fbe-e2cd-4bbf-9d62-d773e1f59a98.jpg?auth_key=1876522031-00a6cbfe03ba4bab96cad05058b624d5-0-09a1f49dc8b65a70cde6c7da269ea9b6" alt="ورديان بلس" class="h-10 object-contain rounded mb-4">
+            <p class="text-gray-400 text-sm leading-relaxed">منصة العروض والخصومات الأولى في مصر. وفّر أكتر واعيش أحسن.</p>
+          </div>
+          <div><h4 class="text-white font-bold mb-4">روابط سريعة</h4><div class="flex flex-col gap-2"><a onclick="navigateTo('home')" class="text-gray-400 hover:text-primary text-sm cursor-pointer transition-colors">الرئيسية</a><a onclick="navigateTo('offers')" class="text-gray-400 hover:text-primary text-sm cursor-pointer transition-colors">العروض</a><a onclick="navigateTo('contact')" class="text-gray-400 hover:text-primary text-sm cursor-pointer transition-colors">الشكاوي والاستفسارات</a></div></div>
+          <div><h4 class="text-white font-bold mb-4">للتجّار</h4><div class="flex flex-col gap-2"><a onclick="navigateTo('register')" class="text-gray-400 hover:text-primary text-sm cursor-pointer transition-colors">سجّل كتاجر</a><a onclick="goToDashboard()" class="text-gray-400 hover:text-primary text-sm cursor-pointer transition-colors">لوحة التحكم</a></div></div>
+          <div><h4 class="text-white font-bold mb-4">تابعنا</h4><div class="flex gap-3"><a class="w-10 h-10 rounded-xl bg-dark-surface flex items-center justify-center text-gray-400 hover:text-primary hover:bg-dark-border transition-colors cursor-pointer"><i class="fab fa-facebook-f"></i></a><a class="w-10 h-10 rounded-xl bg-dark-surface flex items-center justify-center text-gray-400 hover:text-primary hover:bg-dark-border transition-colors cursor-pointer"><i class="fab fa-instagram"></i></a><a class="w-10 h-10 rounded-xl bg-dark-surface flex items-center justify-center text-gray-400 hover:text-primary hover:bg-dark-border transition-colors cursor-pointer"><i class="fab fa-tiktok"></i></a></div></div>
+        </div>
+        <hr class="border-dark-border mb-6">
+        <p class="text-gray-500 text-sm text-center">© 2025 ورديان بلس. جميع الحقوق محفوظة.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ===== تسجيل الدخول ===== -->
+  <div id="login-page" class="page">
+    <section class="min-h-screen hero-bg flex items-center justify-center pt-16">
+      <div class="w-full max-w-md mx-4">
+        <div class="glass rounded-3xl p-8">
+          <div class="text-center mb-8">
+            <img src="https://z-cdn-media.chatglm.cn/files/eb738fbe-e2cd-4bbf-9d62-d773e1f59a98.jpg?auth_key=1876522031-00a6cbfe03ba4bab96cad05058b624d5-0-09a1f49dc8b65a70cde6c7da269ea9b6" alt="ورديان بلس" class="h-12 object-contain rounded mx-auto mb-4">
+            <h2 class="text-white text-2xl font-black">تسجيل الدخول</h2>
+            <p class="text-gray-400 text-sm mt-1">ادخل على حسابك في ورديان بلس</p>
+          </div>
+          <div class="flex bg-dark-surface rounded-xl p-1 mb-6">
+            <button class="tab-btn active flex-1 text-sm" onclick="switchLoginRole('consumer')" id="loginConsumerTab">مستهلك</button>
+            <button class="tab-btn flex-1 text-sm" onclick="switchLoginRole('merchant')" id="loginMerchantTab">تاجر</button>
+          </div>
+          <input type="hidden" id="loginRole" value="consumer">
+          <div class="space-y-4">
+            <div><label class="text-gray-300 text-sm font-semibold mb-1.5 block">البريد الإلكتروني أو الموبايل</label><input type="text" id="loginEmail" class="form-input bg-dark-surface border-dark-border text-white placeholder-gray-500" placeholder="example@email.com"></div>
+            <div><label class="text-gray-300 text-sm font-semibold mb-1.5 block">كلمة المرور</label>
+              <div class="relative"><input type="password" id="loginPassword" class="form-input bg-dark-surface border-dark-border text-white placeholder-gray-500" placeholder="••••••••"><button onclick="togglePwd('loginPassword',this)" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"><i class="fas fa-eye"></i></button></div>
+            </div>
+            <button onclick="handleLogin()" class="btn-primary w-full py-3.5 rounded-xl text-base">تسجيل الدخول</button>
+          </div>
+          <p class="text-gray-400 text-sm text-center mt-6">معندكش حساب؟ <a onclick="navigateTo('register')" class="text-primary font-semibold hover:underline cursor-pointer">سجّل دلوقتي</a></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== إنشاء حساب ===== -->
+  <div id="register-page" class="page">
+    <section class="min-h-screen hero-bg flex items-center justify-center pt-16 pb-10">
+      <div class="w-full max-w-md mx-4">
+        <div class="glass rounded-3xl p-8">
+          <div class="text-center mb-8">
+            <img src="https://z-cdn-media.chatglm.cn/files/eb738fbe-e2cd-4bbf-9d62-d773e1f59a98.jpg?auth_key=1876522031-00a6cbfe03ba4bab96cad05058b624d5-0-09a1f49dc8b65a70cde6c7da269ea9b6" alt="ورديان بلس" class="h-12 object-contain rounded mx-auto mb-4">
+            <h2 class="text-white text-2xl font-black">إنشاء حساب جديد</h2>
+            <p class="text-gray-400 text-sm mt-1">انضم لورديان بلس وابدأ وفّر</p>
+          </div>
+          <div class="flex bg-dark-surface rounded-xl p-1 mb-6">
+            <button class="tab-btn active flex-1 text-sm" onclick="switchRegRole('consumer')" id="regConsumerTab">مستهلك</button>
+            <button class="tab-btn flex-1 text-sm" onclick="switchRegRole('merchant')" id="regMerchantTab">تاجر</button>
+          </div>
+          <input type="hidden" id="regRole" value="consumer">
+          <div class="space-y-4">
+            <div><label class="text-gray-300 text-sm font-semibold mb-1.5 block">الاسم بالكامل</label><input type="text" id="regName" class="form-input bg-dark-surface border-dark-border text-white placeholder-gray-500" placeholder="محمد أحمد"></div>
+            <div id="regStoreGroup" class="hidden"><label class="text-gray-300 text-sm font-semibold mb-1.5 block">اسم المحل</label><input type="text" id="regStoreName" class="form-input bg-dark-surface border-dark-border text-white placeholder-gray-500" placeholder="سوبر ماركت الأهلية"></div>
+            <div><label class="text-gray-300 text-sm font-semibold mb-1.5 block">رقم الموبايل</label><input type="tel" id="regPhone" class="form-input bg-dark-surface border-dark-border text-white placeholder-gray-500" placeholder="01012345678"></div>
+            <div><label class="text-gray-300 text-sm font-semibold mb-1.5 block">البريد الإلكتروني</label><input type="email" id="regEmail" class="form-input bg-dark-surface border-dark-border text-white placeholder-gray-500" placeholder="example@email.com"></div>
+            <div><label class="text-gray-300 text-sm font-semibold mb-1.5 block">كلمة المرور</label>
+              <div class="relative"><input type="password" id="regPassword" class="form-input bg-dark-surface border-dark-border text-white placeholder-gray-500" placeholder="6 أحرف على الأقل"><button onclick="togglePwd('regPassword',this)" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"><i class="fas fa-eye"></i></button></div>
+            </div>
+            <button onclick="handleRegister()" class="btn-primary w-full py-3.5 rounded-xl text-base">إنشاء الحساب</button>
+          </div>
+          <p class="text-gray-400 text-sm text-center mt-6">عندك حساب؟ <a onclick="navigateTo('login')" class="text-primary font-semibold hover:underline cursor-pointer">سجّل دخولك</a></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== صفحة العروض ===== -->
+  <div id="offers-page" class="page">
+    <section class="pt-24 pb-16 bg-gray-50 min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8"><h1 class="text-3xl font-black text-dark mb-2">كل العروض</h1><p class="text-gray-500">اكتشف أحدث الخصومات والعروض</p></div>
+        <div class="bg-white rounded-2xl p-4 mb-6 shadow-sm border">
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1 relative"><i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i><input type="text" id="offersSearch" oninput="filterOffers()" class="form-input pr-12" placeholder="ابحث عن عرض أو منتج..."></div>
+            <select id="offersSort" onchange="filterOffers()" class="form-input w-auto min-w-[160px]"><option value="default">ترتيب حسب</option><option value="discount">أعلى خصم</option><option value="price-low">أقل سعر</option><option value="price-high">أعلى سعر</option><option value="rating">أعلى تقييم</option></select>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-4" id="offersCategoryFilters"></div>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="offersGrid"></div>
+        <div id="noOffersMsg" class="hidden text-center py-16"><i class="fas fa-search text-5xl text-gray-300 mb-4"></i><p class="text-gray-400 text-lg font-semibold">مفيش عروض تطابق بحثك</p></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== سلة المشتريات ===== -->
+  <div id="cart-page" class="page">
+    <section class="pt-24 pb-16 bg-gray-50 min-h-screen">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-black text-dark mb-2">سلة المشتريات</h1>
+        <p class="text-gray-500 mb-8">راجع منتجاتك وكمّل الطلب</p>
+        <div id="cartContent"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== إتمام الشراء ===== -->
+  <div id="checkout-page" class="page">
+    <section class="pt-24 pb-16 bg-gray-50 min-h-screen">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-black text-dark mb-2">إتمام الشراء</h1>
+        <p class="text-gray-500 mb-8">خلّي بياناتك وكمّل الطلب</p>
+        <div id="checkoutContent"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== نجاح الطلب ===== -->
+  <div id="success-page" class="page">
+    <section class="pt-24 pb-16 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div class="text-center max-w-md mx-auto px-4">
+        <div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6"><i class="fas fa-check-circle text-primary text-5xl"></i></div>
+        <h1 class="text-3xl font-black text-dark mb-3">تم تأكيد الطلب بنجاح!</h1>
+        <p class="text-gray-500 mb-2">طلبك رقم <span id="orderNumber" class="text-primary font-bold">#12345</span></p>
+        <p class="text-gray-400 text-sm mb-6">كسبت <span id="earnedPoints" class="text-primary font-bold">0</span> نقطة على هذا الطلب</p>
+        <div class="bg-white rounded-2xl p-6 border shadow-sm mb-6" id="orderSummaryBox"></div>
+        <div class="flex gap-3 justify-center">
+          <button onclick="navigateTo('home')" class="btn-primary px-8 py-3 rounded-xl">الرئيسية</button>
+          <button onclick="goToDashboard()" class="btn-outline px-8 py-3 rounded-xl">لوحة التحكم</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== الشكاوي والاستفسارات ===== -->
+  <div id="contact-page" class="page">
+    <section class="pt-24 pb-16 bg-gray-50 min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- الهيدر -->
+        <div class="bg-gradient-to-l from-dark to-dark-card rounded-3xl p-8 sm:p-12 mb-10 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-64 h-64 rounded-full bg-primary/5 -translate-x-1/3 -translate-y-1/3"></div>
+          <div class="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-primary/5 translate-x-1/3 translate-y-1/3"></div>
+          <div class="relative z-10">
+            <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4">
+              <i class="fas fa-headset text-primary text-sm"></i>
+              <span class="text-primary text-sm font-semibold">خدمة العملاء</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-black text-white mb-3">الشكاوي والاستفسارات</h1>
+            <p class="text-gray-400 max-w-xl">احنا هنا عشانك. لو واجهت أي مشكلة أو عندك استفسار أو اقتراح، تواصل معاينا وهنرد عليك بأسرع وقت.</p>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- الفورم -->
+          <div class="lg:col-span-2">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border">
+              <h2 class="font-bold text-xl mb-6"><i class="fas fa-pen-to-square ml-2 text-primary"></i>قدّم شكوى أو استفسار</h2>
+              <div class="space-y-5">
+                <div class="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label class="text-sm font-semibold text-gray-600 mb-1.5 block">الاسم بالكامل</label>
+                    <input type="text" id="contactName" class="form-input" placeholder="محمد أحمد">
+                  </div>
+                  <div>
+                    <label class="text-sm font-semibold text-gray-600 mb-1.5 block">رقم الموبايل</label>
+                    <input type="tel" id="contactPhone" class="form-input" placeholder="01012345678">
+                  </div>
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-600 mb-1.5 block">البريد الإلكتروني</label>
+                  <input type="email" id="contactEmail" class="form-input" placeholder="example@email.com">
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-600 mb-1.5 block">نوع الرسالة</label>
+                  <select id="contactType" class="form-input">
+                    <option value="">-- اختار النوع --</option>
+                    <option value="complaint">شكوى</option>
+                    <option value="inquiry">استفسار</option>
+                    <option value="suggestion">اقتراح</option>
+                    <option value="problem">مشكلة تقنية</option>
+                    <option value="merchant">استفسار عن حساب تاجر</option>
+                  </select>
+                </div>
+                <div id="contactOrderGroup" class="hidden">
+                  <label class="text-sm font-semibold text-gray-600 mb-1.5 block">رقم الطلب (اختياري)</label>
+                  <input type="text" id="contactOrder" class="form-input" placeholder="#12345">
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-600 mb-1.5 block">موضوع الرسالة</label>
+                  <input type="text" id="contactSubject" class="form-input" placeholder="عنوان مختصر لمشكلتك">
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-600 mb-1.5 block">تفاصيل الرسالة</label>
+                  <textarea id="contactMessage" class="form-input" rows="5" placeholder="اكتب تفاصيل شكواك أو استفسارك هنا..."></textarea>
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-600 mb-1.5 block">إرفاق ملف (اختياري)</label>
+                  <input type="file" id="contactFile" class="form-input text-sm" accept="image/*,.pdf">
+                  <p class="text-xs text-gray-400 mt-1">يمكنك إرفاق صورة أو PDF يوضح المشكلة</p>
+                </div>
+                <button onclick="submitContact()" class="btn-primary px-10 py-3.5 rounded-xl text-base">
+                  <i class="fas fa-paper-plane ml-2"></i>إرسال الرسالة
+                </button>
+              </div>
+            </div>
+
+            <!-- سجل الشكاوي المقدمة -->
+            <div id="complaintsHistory" class="mt-8 hidden">
+              <h2 class="font-bold text-xl mb-4"><i class="fas fa-clock-rotate-left ml-2 text-primary"></i>سجل رسائلك</h2>
+              <div id="complaintsList" class="space-y-4"></div>
+            </div>
+          </div>
+
+          <!-- الجانب -->
+          <div class="space-y-6">
+            <!-- بيانات التواصل -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border">
+              <h3 class="font-bold text-lg mb-4"><i class="fas fa-address-book ml-2 text-primary"></i>بيانات التواصل</h3>
+              <div class="space-y-4">
+                <div class="complaint-card flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                  <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i class="fas fa-phone text-primary"></i></div>
+                  <div><p class="font-bold text-sm">اتصل بينا</p><p class="text-gray-500 text-sm">01012345678</p></div>
+                </div>
+                <div class="complaint-card flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                  <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i class="fas fa-envelope text-primary"></i></div>
+                  <div><p class="font-bold text-sm">البريد الإلكتروني</p><p class="text-gray-500 text-sm">support@wardianplus.com</p></div>
+                </div>
+                <div class="complaint-card flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                  <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i class="fab fa-whatsapp text-primary"></i></div>
+                  <div><p class="font-bold text-sm">واتساب</p><p class="text-gray-500 text-sm">01098765432</p></div>
+                </div>
+                <div class="complaint-card flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                  <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i class="fas fa-clock text-primary"></i></div>
+                  <div><p class="font-bold text-sm">ساعات العمل</p><p class="text-gray-500 text-sm">السبت - الخميس: 9ص - 10م</p></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- الأسئلة الشائعة -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border">
+              <h3 class="font-bold text-lg mb-4"><i class="fas fa-circle-question ml-2 text-primary"></i>أسئلة شائعة</h3>
+              <div class="space-y-3" id="faqContainer">
+                <div class="faq-item border rounded-xl overflow-hidden cursor-pointer" onclick="toggleFaq(this)">
+                  <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                    <span class="font-semibold text-sm">إزاي أتابع شكواي؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-gray-400 text-xs"></i>
+                  </div>
+                  <div class="faq-answer px-4 text-sm text-gray-500 leading-relaxed">بعد ما تقدم الشكوى، هتستلم رقم تتبع. تقدر تتواصل معاينا في أي وقت بيه وهنرد عليك خلال 24 ساعة.</div>
+                </div>
+                <div class="faq-item border rounded-xl overflow-hidden cursor-pointer" onclick="toggleFaq(this)">
+                  <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                    <span class="font-semibold text-sm">وقت الرد بيكون قد إيه؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-gray-400 text-xs"></i>
+                  </div>
+                  <div class="faq-answer px-4 text-sm text-gray-500 leading-relaxed">أغلب الشكاوي بيترد عليها خلال 2-4 ساعات عمل. المشاكل المعقدة ممكن توصل لـ 24 ساعة.</div>
+                </div>
+                <div class="faq-item border rounded-xl overflow-hidden cursor-pointer" onclick="toggleFaq(this)">
+                  <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                    <span class="font-semibold text-sm">أقدر أسترد فلوسي إزاي؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-gray-400 text-xs"></i>
+                  </div>
+                  <div class="faq-answer px-4 text-sm text-gray-500 leading-relaxed">لو فيه مشكلة في الطلب، قدم شكوى مع رقم الطلب وهنراجعها. لو الاسترداد معتمد، الفلوس هترجع محفظتك خلال 3 أيام عمل.</div>
+                </div>
+                <div class="faq-item border rounded-xl overflow-hidden cursor-pointer" onclick="toggleFaq(this)">
+                  <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                    <span class="font-semibold text-sm">العروض مش شغالة عندي</span>
+                    <i class="fas fa-chevron-down faq-chevron text-gray-400 text-xs"></i>
+                  </div>
+                  <div class="faq-answer px-4 text-sm text-gray-500 leading-relaxed">جرب تحدّث التطبيق أو مسح الكاش. لو المشكلة مستمرة، قدم شكوى تقنية وهنحلها في أسرع وقت.</div>
+                </div>
+                <div class="faq-item border rounded-xl overflow-hidden cursor-pointer" onclick="toggleFaq(this)">
+                  <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                    <span class="font-semibold text-sm">عايز أشتغل تاجر على ورديان بلس</span>
+                    <i class="fas fa-chevron-down faq-chevron text-gray-400 text-xs"></i>
+                  </div>
+                  <div class="faq-answer px-4 text-sm text-gray-500 leading-relaxed">سجّل كتاجر من صفحة إنشاء حساب واختار "تاجر". بعد التسجيل هتقدر تضيف منتجاتك وعروضك مباشرة.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- تقييم الدعم -->
+            <div class="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-6 text-center">
+              <i class="fas fa-comments text-4xl text-dark/20 mb-3"></i>
+              <h3 class="font-bold text-dark text-lg mb-2">قيّم خدمة الدعم</h3>
+              <p class="text-dark/60 text-sm mb-4">رأيك مهم عشان نحسّن خدمتنا</p>
+              <div class="flex justify-center gap-2 mb-4" id="supportRating">
+                <i class="far fa-star text-2xl text-dark/40 cursor-pointer hover:text-dark transition-colors" data-val="1" onclick="rateSupport(1)"></i>
+                <i class="far fa-star text-2xl text-dark/40 cursor-pointer hover:text-dark transition-colors" data-val="2" onclick="rateSupport(2)"></i>
+                <i class="far fa-star text-2xl text-dark/40 cursor-pointer hover:text-dark transition-colors" data-val="3" onclick="rateSupport(3)"></i>
+                <i class="far fa-star text-2xl text-dark/40 cursor-pointer hover:text-dark transition-colors" data-val="4" onclick="rateSupport(4)"></i>
+                <i class="far fa-star text-2xl text-dark/40 cursor-pointer hover:text-dark transition-colors" data-val="5" onclick="rateSupport(5)"></i>
+              </div>
+              <p id="supportRatingText" class="text-dark/60 text-xs"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== لوحة تحكم المستهلك ===== -->
+  <div id="consumer-page" class="page">
+    <section class="pt-24 pb-16 bg-gray-50 min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-l from-primary to-primary-dark rounded-3xl p-8 mb-8 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-48 h-48 rounded-full bg-white/10 -translate-x-1/2 -translate-y-1/2"></div>
+          <div class="relative z-10"><p class="text-dark/60 text-sm font-semibold mb-1">أهلاً بيك 👋</p><h1 class="text-2xl sm:text-3xl font-black text-dark" id="consumerWelcome">محمد</h1></div>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-6 mb-8">
+          <div class="stat-card bg-white rounded-2xl p-6 shadow-sm border"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><i class="fas fa-coins text-primary text-xl"></i></div><div><p class="text-gray-500 text-sm">النقاط</p><p class="text-2xl font-black text-dark" id="consumerPoints">0</p></div></div></div>
+          <div class="stat-card bg-white rounded-2xl p-6 shadow-sm border"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center"><i class="fas fa-wallet text-green-600 text-xl"></i></div><div><p class="text-gray-500 text-sm">كاشباك</p><p class="text-2xl font-black text-dark"><span id="consumerCashback">0</span> ج.م</p></div></div></div>
+          <div class="stat-card bg-white rounded-2xl p-6 shadow-sm border"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center"><i class="fas fa-shopping-bag text-blue-600 text-xl"></i></div><div><p class="text-gray-500 text-sm">المشتريات</p><p class="text-2xl font-black text-dark" id="consumerPurchases">0</p></div></div></div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-6 bg-white rounded-xl p-1.5 shadow-sm border w-fit">
+          <button class="tab-btn active text-sm" onclick="switchCTab('purchases',this)">سجل المشتريات</button>
+          <button class="tab-btn text-sm" onclick="switchCTab('saved',this)">العروض المحفوظة</button>
+          <button class="tab-btn text-sm" onclick="switchCTab('mycomplaints',this)">شكاواي</button>
+          <button class="tab-btn text-sm" onclick="switchCTab('profile',this)">البيانات الشخصية</button>
+        </div>
+        <div id="cTab-purchases" class="c-tab-content">
+          <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto">
+            <table class="w-full min-w-[500px]"><thead class="bg-gray-50"><tr><th class="text-right py-3 px-4 text-sm font-semibold text-gray-500">المنتج</th><th class="text-right py-3 px-4 text-sm font-semibold text-gray-500">المتجر</th><th class="text-right py-3 px-4 text-sm font-semibold text-gray-500">المبلغ</th><th class="text-right py-3 px-4 text-sm font-semibold text-gray-500">النقاط</th><th class="text-right py-3 px-4 text-sm font-semibold text-gray-500">التاريخ</th></tr></thead><tbody id="purchasesTable"></tbody></table>
+          </div>
+        </div>
+        <div id="cTab-saved" class="c-tab-content hidden"><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="savedOffersGrid"></div><div id="noSavedMsg" class="hidden text-center py-12"><i class="fas fa-heart text-4xl text-gray-300 mb-3"></i><p class="text-gray-400 font-semibold">مفيش عروض محفوظة</p></div></div>
+        <div id="cTab-mycomplaints" class="c-tab-content hidden">
+          <div id="myComplaintsList"></div>
+          <div id="noComplaintsMsg" class="text-center py-12">
+            <i class="fas fa-headset text-4xl text-gray-300 mb-3"></i>
+            <p class="text-gray-400 font-semibold mb-2">مقدمتش شكاوي لسه</p>
+            <button onclick="navigateTo('contact')" class="btn-primary px-6 py-2.5 rounded-xl text-sm">قدّم شكوى أو استفسار</button>
+          </div>
+        </div>
+        <div id="cTab-profile" class="c-tab-content hidden">
+          <div class="bg-white rounded-2xl p-8 shadow-sm border max-w-xl">
+            <h3 class="font-bold text-lg mb-6">البيانات الشخصية</h3>
+            <div class="space-y-4">
+              <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">الاسم بالكامل</label><input type="text" id="profileName" class="form-input"></div>
+              <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">رقم الموبايل</label><input type="tel" id="profilePhone" class="form-input"></div>
+              <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">البريد الإلكتروني</label><input type="email" id="profileEmail" class="form-input" readonly style="background:#f9fafb;"></div>
+              <button onclick="updateProfile()" class="btn-primary px-8 py-3 rounded-xl text-sm">حفظ التعديلات</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== لوحة تحكم التاجر ===== -->
+  <div id="merchant-page" class="page">
+    <section class="pt-24 pb-16 bg-gray-50 min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-l from-dark to-dark-card rounded-3xl p-8 mb-8 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-48 h-48 rounded-full bg-primary/10 -translate-x-1/2 -translate-y-1/2"></div>
+          <div class="relative z-10"><p class="text-gray-400 text-sm font-semibold mb-1">لوحة تحكم التاجر</p><h1 class="text-2xl sm:text-3xl font-black text-white" id="merchantWelcome">سوبر ماركت الأهلية</h1></div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-6 mb-8">
+          <div class="stat-card bg-white rounded-2xl p-6 shadow-sm border"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><i class="fas fa-eye text-primary text-xl"></i></div><div><p class="text-gray-500 text-sm">المشاهدات</p><p class="text-2xl font-black text-dark" id="merchantViews">3,450</p></div></div></div>
+          <div class="stat-card bg-white rounded-2xl p-6 shadow-sm border"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center"><i class="fas fa-mouse-pointer text-blue-600 text-xl"></i></div><div><p class="text-gray-500 text-sm">النقرات</p><p class="text-2xl font-black text-dark" id="merchantClicks">890</p></div></div></div>
+          <div class="stat-card bg-white rounded-2xl p-6 shadow-sm border"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center"><i class="fas fa-tags text-amber-600 text-xl"></i></div><div><p class="text-gray-500 text-sm">العروض النشطة</p><p class="text-2xl font-black text-dark" id="merchantActiveOffers">0</p></div></div></div>
+          <div class="stat-card bg-white rounded-2xl p-6 shadow-sm border"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center"><i class="fas fa-pound-sign text-green-600 text-xl"></i></div><div><p class="text-gray-500 text-sm">الإيرادات</p><p class="text-2xl font-black text-dark" id="merchantRevenue">12,500 ج.م</p></div></div></div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-6 bg-white rounded-xl p-1.5 shadow-sm border w-fit">
+          <button class="tab-btn active text-sm" onclick="switchMTab('products',this)">منتجاتي</button>
+          <button class="tab-btn text-sm" onclick="switchMTab('add',this)">إضافة منتج</button>
+        </div>
+        <div id="mTab-products" class="m-tab-content"><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="merchantProductsGrid"></div><div id="noMerchantProducts" class="hidden text-center py-16"><i class="fas fa-box-open text-5xl text-gray-300 mb-4"></i><p class="text-gray-400 text-lg font-semibold">مفيش منتجات لسه</p></div></div>
+        <div id="mTab-add" class="m-tab-content hidden">
+          <div class="bg-white rounded-2xl p-8 shadow-sm border max-w-2xl">
+            <h3 class="font-bold text-lg mb-6">إضافة منتج / عرض جديد</h3>
+            <div class="space-y-5">
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">اسم المنتج</label><input type="text" id="prodName" class="form-input" placeholder="زيت عباد الشمس"></div>
+                <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">التصنيف</label><select id="prodCategory" class="form-input"><option value="سوبر ماركت">سوبر ماركت</option><option value="مطاعم">مطاعم</option><option value="إلكترونيات">إلكترونيات</option><option value="ملابس">ملابس</option><option value="صحة وجمال">صحة وجمال</option><option value="منزل">منزل</option></select></div>
+              </div>
+              <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">الوصف</label><textarea id="prodDesc" class="form-input" rows="3" placeholder="وصف مختصر للمنتج أو العرض"></textarea></div>
+              <div class="grid sm:grid-cols-3 gap-5">
+                <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">السعر (ج.م)</label><input type="number" id="prodPrice" class="form-input" placeholder="120"></div>
+                <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">الخصم (%)</label><input type="number" id="prodDiscount" class="form-input" placeholder="25" min="1" max="90"></div>
+                <div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">صورة المنتج</label><input type="file" id="prodImage" accept="image/*" class="form-input text-sm" onchange="previewImg(this)"></div>
+              </div>
+              <div id="imgPreview" class="hidden"><img id="previewImgEl" class="w-32 h-32 rounded-xl object-cover border" alt=""></div>
+              <button onclick="addProduct()" class="btn-primary px-8 py-3 rounded-xl text-sm"><i class="fas fa-plus ml-2"></i>إضافة المنتج</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== الشات بوت ===== -->
+  <div class="chatbot-btn pulseGreen" onclick="toggleChatbot()" id="chatbotBtn"><i class="fas fa-robot text-dark text-xl"></i></div>
+  <div class="chatbot-window" id="chatbotWindow">
+    <div class="bg-gradient-to-l from-dark to-dark-card p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center"><i class="fas fa-robot text-dark text-sm"></i></div><div><p class="text-white font-bold text-sm">مساعد ورديان</p><p class="text-primary text-xs">متصل الآن</p></div></div>
+      <button onclick="toggleChatbot()" class="text-gray-400 hover:text-white transition-colors"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="chat-messages" id="chatMessages"><div class="msg-bot">أهلاً بيك! أنا مساعد ورديان بلس 😊<br>قدر أساعدك تلاقي أحسن العروض أو تقدم شكوى. قولي إنت عايز إيه؟</div></div>
+    <div class="p-3 border-t">
+      <div class="flex gap-2"><input type="text" id="chatInput" class="form-input flex-1 text-sm" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()" class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-dark hover:bg-primary-dark transition-colors flex-shrink-0"><i class="fas fa-paper-plane text-sm"></i></button></div>
+      <div class="flex gap-2 mt-2 overflow-x-auto pb-1">
+        <button onclick="quickChat('فين ارخص زيت؟')" class="whitespace-nowrap text-xs bg-gray-100 hover:bg-primary hover:text-dark px-3 py-1.5 rounded-full transition-colors font-semibold">فين ارخص زيت؟</button>
+        <button onclick="quickChat('اعرض العروض')" class="whitespace-nowrap text-xs bg-gray-100 hover:bg-primary hover:text-dark px-3 py-1.5 rounded-full transition-colors font-semibold">العروض</button>
+        <button onclick="quickChat('عايز اقدم شكوى')" class="whitespace-nowrap text-xs bg-gray-100 hover:bg-primary hover:text-dark px-3 py-1.5 rounded-full transition-colors font-semibold">شكوى</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== بيانات =====
+    const categories = [
+      {id:'سوبر ماركت',icon:'fa-cart-shopping',color:'#29DB80'},
+      {id:'مطاعم',icon:'fa-utensils',color:'#f97316'},
+      {id:'إلكترونيات',icon:'fa-laptop',color:'#3b82f6'},
+      {id:'ملابس',icon:'fa-shirt',color:'#ec4899'},
+      {id:'صحة وجمال',icon:'fa-heart-pulse',color:'#ef4444'},
+      {id:'منزل',icon:'fa-house',color:'#8b5cf6'},
+    ];
+
+    let allOffers = [
+      {id:1,title:'زيت عباد الشمس 1 لتر',store:'سوبر ماركت الأهلية',price:85,originalPrice:130,discount:35,category:'سوبر ماركت',image:'https://picsum.photos/seed/oil11/400/300',saved:false,rating:4,ratingCount:28},
+      {id:2,title:'أرز بسمتي 5 كيلو',store:'م Markt العصر',price:145,originalPrice:195,discount:25,category:'سوبر ماركت',image:'https://picsum.photos/seed/rice22/400/300',saved:false,rating:5,ratingCount:42},
+      {id:3,title:'فرخة بلدي طازة',store:'جزارة الحلال',price:90,originalPrice:150,discount:40,category:'سوبر ماركت',image:'https://picsum.photos/seed/chick33/400/300',saved:false,rating:4,ratingCount:19},
+      {id:4,title:'مكرونة استامبولي 500ج',store:'سوبر ماركت الأهلية',price:12,originalPrice:18,discount:33,category:'سوبر ماركت',image:'https://picsum.photos/seed/pasta44/400/300',saved:false,rating:3,ratingCount:55},
+      {id:5,title:'وجبة كومبو دبل',store:'برجر شاك',price:85,originalPrice:140,discount:39,category:'مطاعم',image:'https://picsum.photos/seed/burger55/400/300',saved:false,rating:5,ratingCount:31},
+      {id:6,title:'بيتزا سوبريم كبير',store:'بيتا هت',price:120,originalPrice:180,discount:33,category:'مطاعم',image:'https://picsum.photos/seed/pizza66/400/300',saved:false,rating:4,ratingCount:67},
+      {id:7,title:'سماعات بلوتوث',store:'تك ستور',price:250,originalPrice:450,discount:44,category:'إلكترونيات',image:'https://picsum.photos/seed/headphones77/400/300',saved:false,rating:4,ratingCount:15},
+      {id:8,title:'باور بانك 20000 mAh',store:'تك ستور',price:320,originalPrice:500,discount:36,category:'إلكترونيات',image:'https://picsum.photos/seed/powerbank88/400/300',saved:false,rating:3,ratingCount:22},
+      {id:9,title:'تيشيرت قطني 100%',store:'مودا شوب',price:150,originalPrice:280,discount:46,category:'ملابس',image:'https://picsum.photos/seed/tshirt99/400/300',saved:false,rating:4,ratingCount:38},
+      {id:10,title:'شامبو الأفوكادو',store:'صيدلية العزبي',price:65,originalPrice:95,discount:32,category:'صحة وجمال',image:'https://picsum.photos/seed/shampoo10/400/300',saved:false,rating:5,ratingCount:44},
+      {id:11,title:'كريم مرطب للبشرة',store:'صيدلية العزبي',price:110,originalPrice:165,discount:33,category:'صحة وجمال',image:'https://picsum.photos/seed/cream11/400/300',saved:false,rating:4,ratingCount:26},
+      {id:12,title:'طقم مفارش قطن',store:'هوم زون',price:350,originalPrice:600,discount:42,category:'منزل',image:'https://picsum.photos/seed/bedsheet12/400/300',saved:false,rating:5,ratingCount:11},
+      {id:13,title:'سجادة صلاة فاخرة',store:'هوم زون',price:180,originalPrice:300,discount:40,category:'منزل',image:'https://picsum.photos/seed/prayrug13/400/300',saved:false,rating:4,ratingCount:8},
+      {id:14,title:'شيبسي 4 قطع',store:'سوبر ماركت الأهلية',price:28,originalPrice:40,discount:30,category:'سوبر ماركت',image:'https://picsum.photos/seed/chips14/400/300',saved:false,rating:3,ratingCount:72},
+      {id:15,title:'فروج مشوي كامل',store:'كوك دور',price:130,originalPrice:200,discount:35,category:'مطاعم',image:'https://picsum.photos/seed/roasted15/400/300',saved:false,rating:5,ratingCount:50},
+      {id:16,title:'بنطلون جينز كلاسيك',store:'مودا شوب',price:250,originalPrice:450,discount:44,category:'ملابس',image:'https://picsum.photos/seed/jeans16/400/300',saved:false,rating:4,ratingCount:33},
+    ];
+
+    let cart = [];
+    let merchantProducts = [];
+    let currentUser = null;
+    let currentFilter = 'الكل';
+    let userPurchases = [];
+    let userComplaints = [];
+
+    // ===== تنقل =====
+    function navigateTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const map = {home:'home-page',login:'login-page',register:'register-page',offers:'offers-page',consumer:'consumer-page',merchant:'merchant-page',cart:'cart-page',checkout:'checkout-page',success:'success-page',contact:'contact-page'};
+      const el = document.getElementById(map[page]);
+      if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+      if(page==='consumer') updateConsumerDashboard();
+      if(page==='merchant') updateMerchantDashboard();
+      if(page==='offers') renderOffersPage();
+      if(page==='cart') renderCart();
+      if(page==='checkout') renderCheckout();
+      if(page==='contact') initContactPage();
+    }
+
+    function goToDashboard() {
+      if(!currentUser) return navigateTo('login');
+      navigateTo(currentUser.role==='merchant'?'merchant':'consumer');
+    }
+
+    // ===== مصادقة =====
+    function switchLoginRole(r){document.getElementById('loginRole').value=r;document.getElementById('loginConsumerTab').classList.toggle('active',r==='consumer');document.getElementById('loginMerchantTab').classList.toggle('active',r==='merchant');}
+    function switchRegRole(r){document.getElementById('regRole').value=r;document.getElementById('regConsumerTab').classList.toggle('active',r==='consumer');document.getElementById('regMerchantTab').classList.toggle('active',r==='merchant');document.getElementById('regStoreGroup').classList.toggle('hidden',r==='consumer');}
+    function togglePwd(id,btn){const i=document.getElementById(id);const ic=btn.querySelector('i');if(i.type==='password'){i.type='text';ic.className='fas fa-eye-slash';}else{i.type='password';ic.className='fas fa-eye';}}
+
+    function handleLogin(){
+      const email=document.getElementById('loginEmail').value.trim();
+      const pw=document.getElementById('loginPassword').value.trim();
+      const role=document.getElementById('loginRole').value;
+      if(!email||!pw){showToast('من فضلك املا كل الخانات','error');return;}
+      if(pw.length<6){showToast('كلمة المرور لازم 6 أحرف على الأقل','error');return;}
+      const name=role==='merchant'?'سوبر ماركت الأهلية':email.split('@')[0];
+      currentUser={name,email,role,points:250,cashback:85,storeName:role==='merchant'?'سوبر ماركت الأهلية':'',phone:''};
+      localStorage.setItem('wardianUser',JSON.stringify(currentUser));
+      updateNavForUser();
+      showToast('تم تسجيل الدخول بنجاح! أهلاً بيك 🎉','success');
+      navigateTo(role==='merchant'?'merchant':'consumer');
+    }
+
+    function handleRegister(){
+      const name=document.getElementById('regName').value.trim();
+      const phone=document.getElementById('regPhone').value.trim();
+      const email=document.getElementById('regEmail').value.trim();
+      const pw=document.getElementById('regPassword').value.trim();
+      const role=document.getElementById('regRole').value;
+      const store=document.getElementById('regStoreName').value.trim();
+      if(!name||!phone||!email||!pw){showToast('من فضلك املا كل الخانات','error');return;}
+      if(pw.length<6){showToast('كلمة المرور لازم 6 أحرف على الأقل','error');return;}
+      if(role==='merchant'&&!store){showToast('لازم تدخل اسم المحل','error');return;}
+      currentUser={name,email,role,points:0,cashback:0,storeName:store,phone};
+      localStorage.setItem('wardianUser',JSON.stringify(currentUser));
+      updateNavForUser();
+      showToast('تم إنشاء الحساب بنجاح! 🎉','success');
+      navigateTo(role==='merchant'?'merchant':'consumer');
+    }
+
+    function logout(){currentUser=null;localStorage.removeItem('wardianUser');updateNavForUser();showToast('تم تسجيل الخروج','success');navigateTo('home');}
+
+    function updateNavForUser(){
+      const a=document.getElementById('navAuth'),u=document.getElementById('navUser'),d=document.getElementById('navDashboard');
+      const ma=document.getElementById('mobileAuth'),mu=document.getElementById('mobileUser'),md=document.getElementById('mobileDashboardLink');
+      if(currentUser){
+        a.classList.add('hidden');u.classList.remove('hidden');u.style.display='flex';d.classList.remove('hidden');
+        ma.classList.add('hidden');mu.classList.remove('hidden');md.classList.remove('hidden');
+        document.getElementById('navName').textContent=currentUser.name;
+        document.getElementById('navAvatar').textContent=currentUser.name.charAt(0);
+        document.getElementById('navPoints').textContent=currentUser.points;
+      }else{
+        a.classList.remove('hidden');u.classList.add('hidden');d.classList.add('hidden');
+        ma.classList.remove('hidden');mu.classList.add('hidden');md.classList.add('hidden');
+      }
+      updateCartBadge();
+    }
+
+    // ===== التصنيفات =====
+    function renderCategories(){
+      document.getElementById('categoriesGrid').innerHTML=categories.map(c=>`
+        <div onclick="navigateTo('offers');setTimeout(()=>{filterByCategory('${c.id}')},100);" class="bg-white rounded-2xl p-5 text-center cursor-pointer hover:shadow-lg transition-all border hover:border-primary/30 group">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3" style="background:${c.color}15;"><i class="fas ${c.icon} text-xl" style="color:${c.color};"></i></div>
+          <p class="font-bold text-sm text-gray-700 group-hover:text-primary transition-colors">${c.id}</p>
+        </div>`).join('');
+    }
+
+    // ===== نجوم التقييم =====
+    function renderStars(r,s='text-sm'){let h='';for(let i=1;i<=5;i++){h+=i<=r?`<i class="fas fa-star text-amber-400 ${s}"></i>`:`<i class="fas fa-star text-gray-200 ${s}"></i>`;}return h;}
+    function renderRatingInteractive(oid,cr){let s=`<div class="star-rating" data-offer="${oid}">`;for(let i=1;i<=5;i++){s+=`<i class="${i<=cr?'fas':'far'} fa-star ${i<=cr?'text-amber-400':'text-gray-300'}" data-val="${i}" onclick="rateOffer(${oid},${i})"></i>`;}s+='</div>';return s;}
+    function rateOffer(oid,val){const o=allOffers.find(x=>x.id===oid);if(o){o.rating=val;o.ratingCount=(o.ratingCount||0)+1;showToast(`قيّمت العرض ${val} نجوم ⭐`,'success');renderFeaturedOffers();renderOffersPage();}}
+
+    // ===== بطاقات العروض =====
+    function createOfferCard(o,showCart=true){
+      return `<div class="offer-card bg-white rounded-2xl overflow-hidden shadow-sm border" data-id="${o.id}">
+        <div class="relative">
+          <img src="${o.image}" alt="${o.title}" class="w-full h-48 object-cover" loading="lazy">
+          <div class="discount-badge absolute top-3 right-3 px-4 py-1.5 text-dark font-extrabold text-sm">-${o.discount}%</div>
+          <button onclick="toggleSave(${o.id})" class="absolute top-3 left-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:scale-110 transition-transform"><i class="fas fa-heart ${o.saved?'text-red-500':'text-gray-300'}"></i></button>
+        </div>
+        <div class="p-4">
+          <p class="font-bold text-gray-800 mb-1 truncate">${o.title}</p>
+          <p class="text-gray-400 text-xs mb-2"><i class="fas fa-store ml-1"></i>${o.store}</p>
+          <div class="flex items-center gap-2 mb-3">${renderRatingInteractive(o.id,o.rating||0)}<span class="text-xs text-gray-400">(${o.ratingCount||0})</span></div>
+          <div class="flex items-center justify-between">
+            <div><span class="text-primary font-black text-lg">${o.price} ج.م</span><span class="text-gray-400 line-through text-xs mr-2">${o.originalPrice} ج.م</span></div>
+            <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-lg font-semibold">${o.category}</span>
+          </div>
+          ${showCart?`<button onclick="addToCart(${o.id})" class="btn-primary w-full py-2.5 rounded-xl text-sm mt-3"><i class="fas fa-cart-plus ml-2"></i>أضف للسلة</button>`:''}
+        </div>
+      </div>`;
+    }
+
+    function renderFeaturedOffers(){document.getElementById('featuredOffers').innerHTML=allOffers.slice(0,4).map(o=>createOfferCard(o)).join('');}
+
+    // ===== صفحة العروض =====
+    function renderOffersPage(){
+      const fc=document.getElementById('offersCategoryFilters');
+      const allCats=['الكل',...categories.map(c=>c.id)];
+      fc.innerHTML=allCats.map(cat=>`<button onclick="filterByCategory('${cat}')" class="category-chip px-4 py-1.5 rounded-full text-sm font-semibold border ${currentFilter===cat?'active':'bg-white text-gray-600'}">${cat}</button>`).join('');
+      filterOffers();
+    }
+    function filterByCategory(cat){currentFilter=cat;renderOffersPage();}
+    function filterOffers(){
+      const search=(document.getElementById('offersSearch')?.value||'').trim().toLowerCase();
+      const sort=document.getElementById('offersSort')?.value||'default';
+      let f=[...allOffers];
+      if(currentFilter!=='الكل')f=f.filter(o=>o.category===currentFilter);
+      if(search)f=f.filter(o=>o.title.toLowerCase().includes(search)||o.store.toLowerCase().includes(search)||o.category.toLowerCase().includes(search));
+      if(sort==='discount')f.sort((a,b)=>b.discount-a.discount);
+      else if(sort==='price-low')f.sort((a,b)=>a.price-b.price);
+      else if(sort==='price-high')f.sort((a,b)=>b.price-a.price);
+      else if(sort==='rating')f.sort((a,b)=>(b.rating||0)-(a.rating||0));
+      const grid=document.getElementById('offersGrid');const noMsg=document.getElementById('noOffersMsg');
+      if(f.length===0){grid.innerHTML='';noMsg.classList.remove('hidden');}else{noMsg.classList.add('hidden');grid.innerHTML=f.map(o=>createOfferCard(o)).join('');}
+    }
+    function toggleSave(id){const o=allOffers.find(x=>x.id===id);if(o){o.saved=!o.saved;showToast(o.saved?'تم حفظ العرض ❤️':'تم إزالة العرض','success');renderFeaturedOffers();renderOffersPage();if(currentUser?.role==='consumer')renderSavedOffers();}}
+
+    // ===== السلة =====
+    function addToCart(oid){const ex=cart.find(c=>c.offerId===oid);if(ex){ex.qty++;}else{cart.push({offerId:oid,qty:1});}updateCartBadge();const o=allOffers.find(x=>x.id===oid);showToast(`تم إضافة "${o?.title}" للسلة 🛒`,'success');const b=document.getElementById('navCartBadge');b.classList.remove('cart-bounce');void b.offsetWidth;b.classList.add('cart-bounce');}
+    function removeFromCart(oid){cart=cart.filter(c=>c.offerId!==oid);updateCartBadge();renderCart();}
+    function updateCartQty(oid,d){const i=cart.find(c=>c.offerId===oid);if(i){i.qty+=d;if(i.qty<=0){removeFromCart(oid);return;}}updateCartBadge();renderCart();}
+    function updateCartBadge(){const t=cart.reduce((s,c)=>s+c.qty,0);['navCartBadge','mobileCartBadge'].forEach(id=>{const b=document.getElementById(id);if(t>0){b.style.display='flex';b.textContent=t;}else{b.style.display='none';}});}
+    function getCartTotal(){return cart.reduce((s,c)=>{const o=allOffers.find(x=>x.id===c.offerId);return s+(o?o.price*c.qty:0);},0);}
+    function getCartSavings(){return cart.reduce((s,c)=>{const o=allOffers.find(x=>x.id===c.offerId);return s+((o?o.originalPrice-o.price:0)*c.qty);},0);}
+
+    function renderCart(){
+      const con=document.getElementById('cartContent');
+      if(cart.length===0){con.innerHTML=`<div class="text-center py-20"><i class="fas fa-shopping-cart text-6xl text-gray-200 mb-6"></i><h2 class="text-2xl font-bold text-gray-400 mb-2">السلة فاضية</h2><p class="text-gray-400 mb-6">مفيش منتجات في السلة دلوقتي</p><button onclick="navigateTo('offers')" class="btn-primary px-8 py-3 rounded-xl">تصفّح العروض</button></div>`;return;}
+      const total=getCartTotal(),savings=getCartSavings();
+      let items=cart.map(c=>{const o=allOffers.find(x=>x.id===c.offerId);if(!o)return'';return`<div class="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm border mb-4"><img src="${o.image}" class="w-20 h-20 rounded-xl object-cover flex-shrink-0" alt=""><div class="flex-1 min-w-0"><p class="font-bold text-gray-800 truncate">${o.title}</p><p class="text-gray-400 text-xs">${o.store}</p><div class="flex items-center gap-2 mt-1">${renderStars(o.rating||0,'text-xs')}</div></div><div class="text-left flex-shrink-0"><p class="text-primary font-black text-lg">${o.price*c.qty} ج.م</p><p class="text-gray-400 line-through text-xs">${o.originalPrice*c.qty} ج.م</p></div><div class="flex items-center gap-2 flex-shrink-0"><button onclick="updateCartQty(${o.id},-1)" class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"><i class="fas fa-minus text-xs"></i></button><span class="font-bold text-sm w-6 text-center">${c.qty}</span><button onclick="updateCartQty(${o.id},1)" class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"><i class="fas fa-plus text-xs"></i></button></div><button onclick="removeFromCart(${o.id})" class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-500 hover:bg-red-100 transition-colors flex-shrink-0"><i class="fas fa-trash text-xs"></i></button></div>`;}).join('');
+      con.innerHTML=`<div class="grid lg:grid-cols-3 gap-6"><div class="lg:col-span-2">${items}</div><div><div class="bg-white rounded-2xl p-6 shadow-sm border sticky top-24"><h3 class="font-bold text-lg mb-4">ملخص الطلب</h3><div class="space-y-3 mb-4"><div class="flex justify-between text-sm"><span class="text-gray-500">عدد المنتجات</span><span class="font-bold">${cart.reduce((s,c)=>s+c.qty,0)}</span></div><div class="flex justify-between text-sm"><span class="text-gray-500">الإجمالي قبل الخصم</span><span class="font-bold">${total+savings} ج.م</span></div><div class="flex justify-between text-sm text-primary"><span>التوفير</span><span class="font-bold">-${savings} ج.م</span></div><hr><div class="flex justify-between"><span class="font-bold text-lg">الإجمالي</span><span class="text-primary font-black text-xl">${total} ج.م</span></div></div><button onclick="goToCheckout()" class="btn-primary w-full py-3.5 rounded-xl text-base">إتمام الشراء <i class="fas fa-arrow-left mr-2"></i></button><button onclick="navigateTo('offers')" class="w-full py-3 rounded-xl text-sm text-gray-500 hover:text-primary transition-colors mt-2">تابع التسوق</button></div></div></div>`;
+    }
+
+    // ===== إتمام الشراء =====
+    function goToCheckout(){if(!currentUser){showToast('لازم تسجل دخولك الأول','error');navigateTo('login');return;}if(cart.length===0){showToast('السلة فاضية','error');return;}navigateTo('checkout');}
+
+    function renderCheckout(){
+      const total=getCartTotal(),savings=getCartSavings(),earned=Math.floor(total*0.1);
+      document.getElementById('checkoutContent').innerHTML=`<div class="grid lg:grid-cols-3 gap-6"><div class="lg:col-span-2"><div class="bg-white rounded-2xl p-6 shadow-sm border mb-6"><h3 class="font-bold text-lg mb-4"><i class="fas fa-user ml-2 text-primary"></i>بيانات التوصيل</h3><div class="space-y-4"><div class="grid sm:grid-cols-2 gap-4"><div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">الاسم بالكامل</label><input type="text" id="checkName" class="form-input" value="${currentUser?.name||''}"></div><div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">رقم الموبايل</label><input type="tel" id="checkPhone" class="form-input" value="${currentUser?.phone||''}"></div></div><div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">العنوان بالتفصيل</label><input type="text" id="checkAddress" class="form-input" placeholder="الشارع - المنطقة - المحافظة"></div><div><label class="text-sm font-semibold text-gray-600 mb-1.5 block">ملاحظات (اختياري)</label><textarea id="checkNotes" class="form-input" rows="2" placeholder="أي ملاحظات على الطلب"></textarea></div></div></div><div class="bg-white rounded-2xl p-6 shadow-sm border mb-6"><h3 class="font-bold text-lg mb-4"><i class="fas fa-credit-card ml-2 text-primary"></i>طريقة الدفع</h3><div class="space-y-3"><label class="flex items-center gap-3 p-4 rounded-xl border-2 border-primary bg-primary/5 cursor-pointer"><input type="radio" name="payment" value="cod" checked class="accent-primary w-4 h-4"><i class="fas fa-money-bill-wave text-primary"></i><span class="font-semibold">الدفع عند الاستلام</span></label><label class="flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 hover:border-primary/50 cursor-pointer transition-colors"><input type="radio" name="payment" value="wallet" class="accent-primary w-4 h-4"><i class="fas fa-wallet text-blue-500"></i><span class="font-semibold">محفظة إلكترونية</span></label><label class="flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 hover:border-primary/50 cursor-pointer transition-colors"><input type="radio" name="payment" value="card" class="accent-primary w-4 h-4"><i class="fas fa-credit-card text-purple-500"></i><span class="font-semibold">بطاقة ائتمان</span></label></div></div></div><div><div class="bg-white rounded-2xl p-6 shadow-sm border sticky top-24"><h3 class="font-bold text-lg mb-4">ملخص الطلب</h3><div class="space-y-3 mb-4 max-h-60 overflow-y-auto">${cart.map(c=>{const o=allOffers.find(x=>x.id===c.offerId);return o?`<div class="flex items-center gap-3"><img src="${o.image}" class="w-12 h-12 rounded-lg object-cover"><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate">${o.title}</p><p class="text-xs text-gray-400">الكمية: ${c.qty}</p></div><span class="text-sm font-bold text-primary">${o.price*c.qty} ج.م</span></div>`:'';}).join('')}</div><hr class="my-3"><div class="space-y-2 mb-4"><div class="flex justify-between text-sm"><span class="text-gray-500">الإجمالي قبل الخصم</span><span>${total+savings} ج.م</span></div><div class="flex justify-between text-sm text-primary font-semibold"><span>التوفير</span><span>-${savings} ج.م</span></div><div class="flex justify-between text-sm"><span class="text-gray-500">مصاريف الشحن</span><span class="text-primary font-semibold">مجاناً</span></div><hr><div class="flex justify-between"><span class="font-bold text-lg">الإجمالي</span><span class="text-primary font-black text-xl">${total} ج.م</span></div></div><div class="bg-primary/10 rounded-xl p-3 mb-4 text-center"><p class="text-sm font-bold text-primary"><i class="fas fa-coins ml-1"></i>هتكسب ${earned} نقطة على هذا الطلب</p></div><button onclick="placeOrder()" class="btn-primary w-full py-3.5 rounded-xl text-base">تأكيد الطلب <i class="fas fa-check ml-2"></i></button></div></div></div>`;
+    }
+
+    function placeOrder(){
+      const name=document.getElementById('checkName')?.value.trim();
+      const phone=document.getElementById('checkPhone')?.value.trim();
+      const address=document.getElementById('checkAddress')?.value.trim();
+      if(!name||!phone||!address){showToast('من فضلك املا بيانات التوصيل','error');return;}
+      const total=getCartTotal(),earned=Math.floor(total*0.1),cashback=Math.floor(total*0.05);
+      const orderNum=Math.floor(10000+Math.random()*90000);
+      currentUser.points+=earned;currentUser.cashback+=cashback;
+      localStorage.setItem('wardianUser',JSON.stringify(currentUser));
+      cart.forEach(c=>{const o=allOffers.find(x=>x.id===c.offerId);if(o){userPurchases.push({product:o.title,store:o.store,amount:o.price*c.qty,points:Math.floor(o.price*c.qty*0.1),date:new Date().toISOString().split('T')[0]});}});
+      document.getElementById('orderNumber').textContent='#'+orderNum;
+      document.getElementById('earnedPoints').textContent=earned;
+      document.getElementById('orderSummaryBox').innerHTML=`<div class="space-y-2 text-sm"><div class="flex justify-between"><span class="text-gray-500">إجمالي الطلب</span><span class="font-bold">${total} ج.م</span></div><div class="flex justify-between"><span class="text-gray-500">النقاط المكتسبة</span><span class="text-primary font-bold">+${earned}</span></div><div class="flex justify-between"><span class="text-gray-500">كاشباك</span><span class="text-primary font-bold">+${cashback} ج.م</span></div><div class="flex justify-between"><span class="text-gray-500">طريقة الدفع</span><span class="font-semibold">عند الاستلام</span></div></div>`;
+      cart=[];updateCartBadge();updateNavForUser();navigateTo('success');
+    }
+
+    // ===== لوحة المستهلك =====
+    function updateConsumerDashboard(){
+      if(!currentUser)return;
+      document.getElementById('consumerWelcome').textContent=currentUser.name;
+      document.getElementById('consumerPoints').textContent=currentUser.points;
+      document.getElementById('consumerCashback').textContent=currentUser.cashback;
+      document.getElementById('consumerPurchases').textContent=userPurchases.length;
+      document.getElementById('profileName').value=currentUser.name;
+      document.getElementById('profileEmail').value=currentUser.email;
+      document.getElementById('profilePhone').value=currentUser.phone||'';
+      renderPurchases();renderSavedOffers();renderMyComplaints();
+    }
+
+    function renderPurchases(){
+      const tbody=document.getElementById('purchasesTable');
+      const data=userPurchases.length>0?userPurchases:[{product:'زيت عباد الشمس',store:'سوبر ماركت الأهلية',amount:85,points:15,date:'2025-01-15'},{product:'وجبة كومبو',store:'برجر شاك',amount:85,points:20,date:'2025-01-12'}];
+      tbody.innerHTML=data.map(p=>`<tr class="border-t hover:bg-gray-50 transition-colors"><td class="py-3 px-4 text-sm font-semibold">${p.product}</td><td class="py-3 px-4 text-sm text-gray-500">${p.store}</td><td class="py-3 px-4 text-sm font-bold text-primary">${p.amount} ج.م</td><td class="py-3 px-4 text-sm"><span class="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-bold">+${p.points}</span></td><td class="py-3 px-4 text-sm text-gray-400">${p.date}</td></tr>`).join('');
+    }
+
+    function renderSavedOffers(){
+      const grid=document.getElementById('savedOffersGrid'),noMsg=document.getElementById('noSavedMsg');
+      const saved=allOffers.filter(o=>o.saved);
+      if(saved.length===0){grid.innerHTML='';noMsg.classList.remove('hidden');}else{noMsg.classList.add('hidden');grid.innerHTML=saved.map(o=>createOfferCard(o)).join('');}
+    }
+
+    function renderMyComplaints(){
+      const list=document.getElementById('myComplaintsList'),noMsg=document.getElementById('noComplaintsMsg');
+      if(userComplaints.length===0){list.innerHTML='';noMsg.style.display='block';}
+      else{
+        noMsg.style.display='none';
+        list.innerHTML=userComplaints.map((c,i)=>{
+          const statusColors={pending:'bg-amber-100 text-amber-700',resolved:'bg-green-100 text-green-700',in_progress:'bg-blue-100 text-blue-700'};
+          const statusLabels={pending:'قيد المراجعة',resolved:'تم الحل',in_progress:'جاري العمل'};
+          const typeLabels={complaint:'شكوى',inquiry:'استفسار',suggestion:'اقتراح',problem:'مشكلة تقنية',merchant:'استفسار تاجر'};
+          return`<div class="complaint-card bg-white rounded-2xl p-5 shadow-sm border">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">#${c.id}</span>
+                <span class="text-xs font-bold ${statusColors[c.status]} px-2 py-1 rounded-lg">${statusLabels[c.status]}</span>
+                <span class="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded-lg">${typeLabels[c.type]||c.type}</span>
+              </div>
+              <span class="text-xs text-gray-400">${c.date}</span>
+            </div>
+            <h4 class="font-bold text-sm mb-1">${c.subject}</h4>
+            <p class="text-gray-500 text-xs leading-relaxed line-clamp-2">${c.message}</p>
+            ${c.order?`<p class="text-xs text-gray-400 mt-2"><i class="fas fa-hashtag ml-1"></i>طلب رقم: ${c.order}</p>`:''}
+          </div>`;
+        }).join('');
+      }
+    }
+
+    function switchCTab(tab,btn){document.querySelectorAll('.c-tab-content').forEach(c=>c.classList.add('hidden'));document.getElementById(`cTab-${tab}`).classList.remove('hidden');btn.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+    function updateProfile(){const name=document.getElementById('profileName').value.trim(),phone=document.getElementById('profilePhone').value.trim();if(!name){showToast('الاسم مطلوب','error');return;}currentUser.name=name;currentUser.phone=phone;localStorage.setItem('wardianUser',JSON.stringify(currentUser));updateNavForUser();updateConsumerDashboard();showToast('تم تحديث البيانات بنجاح','success');}
+
+    // ===== لوحة التاجر =====
+    function updateMerchantDashboard(){if(!currentUser)return;document.getElementById('merchantWelcome').textContent=currentUser.storeName||currentUser.name;document.getElementById('merchantActiveOffers').textContent=merchantProducts.length;renderMerchantProducts();}
+    function renderMerchantProducts(){
+      const grid=document.getElementById('merchantProductsGrid'),noMsg=document.getElementById('noMerchantProducts');
+      if(merchantProducts.length===0){grid.innerHTML='';noMsg.classList.remove('hidden');}
+      else{noMsg.classList.add('hidden');grid.innerHTML=merchantProducts.map((p,i)=>`<div class="merchant-product-card bg-white rounded-2xl overflow-hidden shadow-sm border transition-all hover:shadow-md"><img src="${p.image}" alt="${p.name}" class="w-full h-40 object-cover"><div class="p-4"><div class="flex items-start justify-between mb-2"><h4 class="font-bold text-gray-800">${p.name}</h4><span class="bg-primary text-dark text-xs font-bold px-2 py-0.5 rounded-lg">-${p.discount}%</span></div><p class="text-gray-400 text-xs mb-2">${p.category}</p><div class="flex items-center gap-2 mb-2">${renderStars(p.rating||4,'text-xs')}<span class="text-xs text-gray-400">(${p.ratingCount||Math.floor(Math.random()*50+5)})</span></div><div class="flex items-center justify-between"><span class="text-primary font-black">${p.price} ج.م</span><button onclick="deleteProduct(${i})" class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-500 hover:bg-red-100 transition-colors" title="حذف"><i class="fas fa-trash text-xs"></i></button></div><div class="mt-3 flex items-center gap-4 text-xs text-gray-400"><span><i class="fas fa-eye ml-1"></i>${Math.floor(Math.random()*500+50)}</span><span><i class="fas fa-mouse-pointer ml-1"></i>${Math.floor(Math.random()*100+10)}</span></div></div></div>`).join('');}
+      document.getElementById('merchantActiveOffers').textContent=merchantProducts.length;
+    }
+    function switchMTab(tab,btn){document.querySelectorAll('.m-tab-content').forEach(c=>c.classList.add('hidden'));document.getElementById(`mTab-${tab}`).classList.remove('hidden');btn.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+    function previewImg(input){const p=document.getElementById('imgPreview'),img=document.getElementById('previewImgEl');if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{img.src=e.target.result;p.classList.remove('hidden');};r.readAsDataURL(input.files[0]);}}
+    function addProduct(){
+      const name=document.getElementById('prodName').value.trim(),category=document.getElementById('prodCategory').value,desc=document.getElementById('prodDesc').value.trim(),price=parseFloat(document.getElementById('prodPrice').value),discount=parseInt(document.getElementById('prodDiscount').value);
+      if(!name){showToast('لازم تدخل اسم المنتج','error');return;}if(!price||price<=0){showToast('لازم تدخل سعر صحيح','error');return;}if(!discount||discount<1||discount>90){showToast('الخصم لازم يكون بين 1 و 90','error');return;}
+      const originalPrice=Math.round(price/(1-discount/100));const imageFile=document.getElementById('prodImage').files[0];const seed='prod'+Date.now();
+      const product={name,category,desc,price,originalPrice,discount,image:imageFile?URL.createObjectURL(imageFile):`https://picsum.photos/seed/${seed}/400/300`,rating:0,ratingCount:0};
+      merchantProducts.push(product);
+      allOffers.push({id:Date.now(),title:name,store:currentUser.storeName||currentUser.name,price,originalPrice,discount,category,image:product.image,saved:false,rating:0,ratingCount:0});
+      document.getElementById('prodName').value='';document.getElementById('prodDesc').value='';document.getElementById('prodPrice').value='';document.getElementById('prodDiscount').value='';document.getElementById('prodImage').value='';document.getElementById('imgPreview').classList.add('hidden');
+      const views=parseInt(document.getElementById('merchantViews').textContent.replace(/,/g,''))+Math.floor(Math.random()*200+50);
+      const clicks=parseInt(document.getElementById('merchantClicks').textContent.replace(/,/g,''))+Math.floor(Math.random()*40+10);
+      document.getElementById('merchantViews').textContent=views.toLocaleString();document.getElementById('merchantClicks').textContent=clicks.toLocaleString();
+      renderMerchantProducts();showToast('تم إضافة المنتج بنجاح! 🎉','success');
+    }
+    function deleteProduct(i){merchantProducts.splice(i,1);renderMerchantProducts();showToast('تم حذف المنتج','success');}
+
+    // ===== الشكاوي =====
+    function initContactPage(){
+      // ملء بيانات المستخدم لو مسجل
+      if(currentUser){
+        const nameEl=document.getElementById('contactName');
+        const phoneEl=document.getElementById('contactPhone');
+        const emailEl=document.getElementById('contactEmail');
+        if(nameEl&&!nameEl.value)nameEl.value=currentUser.name;
+        if(phoneEl&&!phoneEl.value)phoneEl.value=currentUser.phone||'';
+        if(emailEl&&!emailEl.value)emailEl.value=currentUser.email;
+      }
+      // إظهار رقم الطلب لو نوع الشكوى مناسب
+      const typeEl=document.getElementById('contactType');
+      if(typeEl){
+        typeEl.onchange=function(){
+          const show=['complaint','problem'];
+          document.getElementById('contactOrderGroup').classList.toggle('hidden',!show.includes(this.value));
+        };
+      }
+      // عرض سجل الشكاوي
+      renderComplaintsHistory();
+    }
+
+    function submitContact(){
+      const name=document.getElementById('contactName').value.trim();
+      const phone=document.getElementById('contactPhone').value.trim();
+      const email=document.getElementById('contactEmail').value.trim();
+      const type=document.getElementById('contactType').value;
+      const subject=document.getElementById('contactSubject').value.trim();
+      const message=document.getElementById('contactMessage').value.trim();
+      const order=document.getElementById('contactOrder').value.trim();
+
+      if(!name||!phone||!email){showToast('من فضلك املا بيانات التواصل','error');return;}
+      if(!type){showToast('اختار نوع الرسالة','error');return;}
+      if(!subject){showToast('اكتب موضوع الرسالة','error');return;}
+      if(!message){showToast('اكتب تفاصيل الرسالة','error');return;}
+
+      const complaint={
+        id:Math.floor(1000+Math.random()*9000),
+        name,phone,email,type,subject,message,order,
+        date:new Date().toISOString().split('T')[0],
+        status:'pending'
+      };
+
+      userComplaints.unshift(complaint);
+
+      // مسح الفورم
+      document.getElementById('contactSubject').value='';
+      document.getElementById('contactMessage').value='';
+      document.getElementById('contactOrder').value='';
+
+      showToast(`تم إرسال رسالتك بنجاح! رقم التتبع: #${complaint.id} 🎉`,'success');
+      renderComplaintsHistory();
+    }
+
+    function renderComplaintsHistory(){
+      const hist=document.getElementById('complaintsHistory');
+      const list=document.getElementById('complaintsList');
+      if(userComplaints.length===0){hist.classList.add('hidden');return;}
+      hist.classList.remove('hidden');
+      const statusColors={pending:'bg-amber-100 text-amber-700',resolved:'bg-green-100 text-green-700',in_progress:'bg-blue-100 text-blue-700'};
+      const statusLabels={pending:'قيد المراجعة',resolved:'تم الحل',in_progress:'جاري العمل'};
+      const typeLabels={complaint:'شكوى',inquiry:'استفسار',suggestion:'اقتراح',problem:'مشكلة تقنية',merchant:'استفسار تاجر'};
+      list.innerHTML=userComplaints.map(c=>`
+        <div class="complaint-card bg-white rounded-2xl p-5 shadow-sm border">
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span class="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">#${c.id}</span>
+            <span class="text-xs font-bold ${statusColors[c.status]} px-2 py-1 rounded-lg">${statusLabels[c.status]}</span>
+            <span class="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded-lg">${typeLabels[c.type]||c.type}</span>
+            <span class="text-xs text-gray-400 mr-auto">${c.date}</span>
+          </div>
+          <h4 class="font-bold text-sm mb-1">${c.subject}</h4>
+          <p class="text-gray-500 text-xs leading-relaxed">${c.message}</p>
+          ${c.order?`<p class="text-xs text-gray-400 mt-2"><i class="fas fa-hashtag ml-1"></i>طلب رقم: ${c.order}</p>`:''}
+        </div>`).join('');
+    }
+
+    // ===== أسئلة شائعة =====
+    function toggleFaq(el){el.classList.toggle('open');}
+
+    // ===== تقييم الدعم =====
+    function rateSupport(val){
+      const stars=document.querySelectorAll('#supportRating i');
+      const texts=['','سيء','مقبول','كويس','كويس جداً','ممتاز! شكراً لك 🎉'];
+      stars.forEach((s,i)=>{
+        if(i<val){s.className='fas fa-star text-2xl text-dark cursor-pointer hover:text-dark transition-colors';}
+        else{s.className='far fa-star text-2xl text-dark/40 cursor-pointer hover:text-dark transition-colors';}
+      });
+      document.getElementById('supportRatingText').textContent=texts[val];
+      if(val>=4) showToast('شكراً لتقييمك الإيجابي! 🙏','success');
+    }
+
+    // ===== الشات بوت =====
+    function toggleChatbot(){const w=document.getElementById('chatbotWindow'),b=document.getElementById('chatbotBtn');w.classList.toggle('open');b.style.display=w.classList.contains('open')?'none':'flex';}
+    function sendChat(){const input=document.getElementById('chatInput'),msg=input.value.trim();if(!msg)return;addChatMsg(msg,'user');input.value='';const typing=document.createElement('div');typing.className='msg-bot typing-indicator';typing.innerHTML='<span></span><span></span><span></span>';document.getElementById('chatMessages').appendChild(typing);scrollChat();setTimeout(()=>{typing.remove();addChatMsg(getBotResponse(msg),'bot');},700+Math.random()*500);}
+    function quickChat(msg){document.getElementById('chatInput').value=msg;sendChat();}
+    function addChatMsg(text,sender){const c=document.getElementById('chatMessages'),d=document.createElement('div');d.className=sender==='user'?'msg-user':'msg-bot';d.innerHTML=text;c.appendChild(d);scrollChat();}
+    function scrollChat(){const c=document.getElementById('chatMessages');c.scrollTop=c.scrollHeight;}
+
+    function getBotResponse(msg){
+      const l=msg.toLowerCase();
+      if(l.includes('زيت')){const oils=allOffers.filter(o=>o.title.includes('زيت'));if(oils.length>0){const ch=oils.reduce((a,b)=>a.price<b.price?a:b);return`أرخص زيت: <b>${ch.title}</b> بسعر <b>${ch.price} ج.م</b> (${ch.discount}% خصم) من ${ch.store} 🛒`;}return'معندش عروض زيت دلوقتي 🔍';}
+      if(l.includes('مكرونة')){const p=allOffers.filter(o=>o.title.includes('مكرونة'));if(p.length>0)return`أفضل عرض مكرونة: <b>${p[0].title}</b> بسعر <b>${p[0].price} ج.م</b> (${p[0].discount}% خصم) 🍝`;return'مفيش عروض مكرونة حالياً 🍝';}
+      if(l.includes('ارخص')||l.includes('أرخص')){const t=[...allOffers].sort((a,b)=>a.price-b.price).slice(0,3);return'أرخص العروض:<br>'+t.map(o=>`• <b>${o.title}</b> - ${o.price} ج.م (${o.discount}% خصم)`).join('<br>');}
+      if(l.includes('شكوى')||l.includes('شكاوي')||l.includes('استفسار')||l.includes('مشكلة')){return'لو عندك شكوى أو استفسار، روح لصفحة <b>الشكاوي والاستفسارات</b> وقدم رسالتك وهنرد عليك في أسرع وقت! <br><br>اضيغط <a style="color:#29DB80;font-weight:bold;cursor:pointer;" onclick="navigateTo(\'contact\')">هنا</a> عشان تروح الصفحة';}
+      if(l.includes('افضل')||l.includes('أفضل')){const t=[...allOffers].sort((a,b)=>b.discount-a.discount).slice(0,3);return'أفضل العروض (أعلى خصم):<br>'+t.map(o=>`• <b>${o.title}</b> - ${o.discount}% خصم (${o.price} ج.م)`).join('<br>');}
+      if(l.includes('عرض')||l.includes('عروض')||l.includes('خصم')){const t=[...allOffers].sort((a,b)=>b.discount-a.discount).slice(0,4);return'أحدث العروض:<br>'+t.map(o=>`• <b>${o.title}</b> - ${o.discount}% خصم (${o.price} ج.م)`).join('<br>');}
+      if(l.includes('نقاط'))return'كل عملية شراء بتكسب نقاط! تقدر تستبدلها في مشترياتك 💰';
+      if(l.includes('كاشباك'))return'الكاشباك بيرجع جزء من فلوسك بعد كل عملية شراء 📱';
+      if(l.includes('سلة')||l.includes('شراء'))return'اضغط "أضف للسلة" على أي عرض، ثم روح السلة وكمّل الطلب 🛒';
+      if(l.includes('مرحبا')||l.includes('اهلا')||l.includes('أهلا')||l.includes('هاي'))return'أهلاً بيك! 😊 قولي إنت عايز إيه؟';
+      if(l.includes('شكر'))return'العفو! 😊 لو محتاج حاجة تاني أنا موجود';
+      return'قدر أساعدك تلاقي عروض أو تقدم شكوى:<br>🛒 سوبر ماركت | 🍔 مطاعم | 💻 إلكترونيات<br>جرّب: "فين ارخص زيت؟" أو "عايز اقدم شكوى"';
+    }
+
+    // ===== إشعارات =====
+    function showToast(message,type='success'){const c=document.getElementById('toastContainer'),t=document.createElement('div');t.className='toast'+(type==='error'?' error':'');const icon=type==='error'?'fa-exclamation-circle':'fa-check-circle';const color=type==='error'?'#ef4444':'#29DB80';t.innerHTML=`<i class="fas ${icon}" style="color:${color}"></i>${message}`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-20px)';t.style.transition='all 0.3s';setTimeout(()=>t.remove(),300);},3000);}
+
+    function toggleMobileMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('mobileOverlay').classList.toggle('open');}
+
+    // ===== تهيئة =====
+    function init(){
+      const saved=localStorage.getItem('wardianUser');
+      if(saved){currentUser=JSON.parse(saved);updateNavForUser();}
+      renderCategories();renderFeaturedOffers();updateCartBadge();
+      window.addEventListener('scroll',()=>{const nav=document.getElementById('mainNav');nav.style.boxShadow=window.scrollY>50?'0 4px 30px rgba(0,0,0,0.2)':'none';});
+      const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.1});
+      document.querySelectorAll('.stat-card,.offer-card').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='all 0.5s ease';obs.observe(el);});
+    }
+    init();
+  </script>
+</body>
+</html>
